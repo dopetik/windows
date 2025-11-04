@@ -1,4 +1,4 @@
-version: "3.8"
+
 services:
   windows:
     container_name: windows
@@ -41,3 +41,4 @@ services:
 networks:
   hack_network:
     driver: bridge
+    internal: true
