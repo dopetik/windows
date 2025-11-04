@@ -1,19 +1,22 @@
+version: "3.8"
 services:
   windows:
-    image: dockurr/windows
     container_name: windows
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      VERSION: "11"
+      VERSION: "xp"
     devices:
       - /dev/kvm
       - /dev/net/tun
     cap_add:
       - NET_ADMIN
     ports:
-      - 8006:8006
-      - 3389:3389/tcp
-      - 3389:3389/udp
+      - "8006:8006"
+      - "3389:3389/tcp"
+      - "3389:3389/udp"
     volumes:
-      - ./windows:/storage
+      - ./DATA:/storage
     restart: always
     stop_grace_period: 2m
