@@ -4,7 +4,7 @@ services:
     container_name: windows
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.win
     environment:
       VERSION: "xp"
     devices:
@@ -20,3 +20,24 @@ services:
       - ./DATA:/storage
     restart: always
     stop_grace_period: 2m
+    networks:
+      - hack_network
+
+  kali:
+    container_name: kali
+    build:
+      context: .
+      dockerfile: Dockerfile.kali
+    #devices:
+    #  - /dev/net/tun
+    #cap_add:
+    #  - NET_ADMIN
+    ports:
+      - "4200:4200"
+    restart: always
+    networks:
+      - hack_network
+
+networks:
+  hack_network:
+    driver: bridge
