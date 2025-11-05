@@ -1,7 +1,9 @@
 FROM kalilinux/kali-rolling
 
-RUN apt update && apt install -y shellinabox
-RUN apt install -y metasploit-framework
-RUN apt clean && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y shellinabox kali-linux-headless metasploit-framework && apt clean && rm -rf /var/lib/apt/lists/*
+RUN service postgresql start && msfdb init
+# Set root password
+RUN echo 'root:toor' | chpasswd
+COPY custom.css /etc/shellinabox/options-enabled/custom.css
 EXPOSE 4200
-ENTRYPOINT [ "shellinaboxd", "-s", "--no-beep", "--disable-ssl" ]
+ENTRYPOINT [ "shellinaboxd", "--css=/etc/shellinabox/options-enabled/custom.css", "--no-beep", "--disable-ssl", "--service=/:root:root:/:/bin/bash" ]

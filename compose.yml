@@ -1,4 +1,4 @@
-
+version: "3.8"
 services:
   windows:
     container_name: windows
@@ -6,7 +6,12 @@ services:
       context: .
       dockerfile: Dockerfile.win
     environment:
-      VERSION: "xp"
+      VERSION: "7u"
+      USERNAME: "docker"
+      PASSWORD: "test"
+      RAM_SIZE: "2G"
+      CPU_CORES: "2"
+      DISK_SIZE: "32G" 
     devices:
       - /dev/kvm
       - /dev/net/tun
@@ -16,29 +21,40 @@ services:
       - "8006:8006"
       - "3389:3389/tcp"
       - "3389:3389/udp"
+      - "1445:445"
+  
     volumes:
       - ./DATA:/storage
     restart: always
     stop_grace_period: 2m
     networks:
       - hack_network
-
+      - public_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   kali:
     container_name: kali
     build:
       context: .
       dockerfile: Dockerfile.kali
-    #devices:
-    #  - /dev/net/tun
-    #cap_add:
-    #  - NET_ADMIN
     ports:
       - "4200:4200"
+      - "4444:4444"
+      - "8080:8080"
+      - "44080:44080"
+    
     restart: always
     networks:
       - hack_network
-
+      - public_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 networks:
   hack_network:
     driver: bridge
     internal: true
+  public_net:
+    driver: bridge
+    internal: false
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"
